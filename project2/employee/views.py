@@ -15,18 +15,19 @@ class IndexView(generic.ListView):
     def get_context_data(self):
         #テンプレートに渡す辞書の作成
         context = super().get_context_data()
-        #POSTにすると、queryが空になるのでformの検索がどちらも「-----」になる
-        #しかし、検索はGETでリクエストを取得しているので、検索はできるが毎回リセットされる
-        context['form'] = SearchForm(self.request.POST)
+        #POSTにすると、検索時に選択が消える(毎回新規の検索になる)
+        context['form'] = SearchForm(self.request.GET)
         if self.request.method == "POST":
             print(self.request)
         else:
-            print('getだよ',context['form'])
+            print('getだよ',self.request.POST)
+
+        #print(context['form'])
+        #print(context)
         return context
     
     def get_queryset(self):
         #テンプレートに渡すemployee_list変数の中身の作成
-        #ここをPOSTにすると、空のクエリが返ってくるので何も検索されない
         formm = SearchForm(self.request.GET)
         formm.is_valid() #これがないとclean_dataができない
 
